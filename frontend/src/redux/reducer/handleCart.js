@@ -37,6 +37,10 @@ const handleCart = (state = getInitialCart(), action) => {
       }
       break;
 
+    case "RESETCART":
+      updatedCart = [];
+      break;
+
     default:
       return state;
   }

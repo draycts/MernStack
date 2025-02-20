@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { resetCart } from '../redux/action';
 
 const Navbar = () => {
     const state = useSelector(state => state.handleCart);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [username, setUsername] = useState('');
 
     useEffect(() => {
@@ -22,6 +24,7 @@ const Navbar = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUsername('');
+        dispatch(resetCart());
         navigate('/login');
     };
 
