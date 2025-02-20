@@ -1,5 +1,3 @@
-// filepath: /d:/2089375/GHCP-react-base-app/mern-Ecom-app/frontend/src/redux/reducer/handleCart.js
-
 // Retrieve initial state from localStorage if available
 const getInitialCart = () => {
   const user = JSON.parse(localStorage.getItem('user'));

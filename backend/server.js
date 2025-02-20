@@ -1,4 +1,3 @@
-// filepath: /d:/2089375/GHCP-react-base-app/mern-Ecom-app/backend/server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
