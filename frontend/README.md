@@ -1,4 +1,4 @@
-https://github.com/mohamedsamara/mern-ecommerce/tree/master/server
+
 ## Run Locally
 
 Clone the project
