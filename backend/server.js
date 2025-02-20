@@ -1,3 +1,4 @@
+// filepath: /d:/2089375/GHCP-react-base-app/mern-Ecom-app/backend/server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -24,3 +25,5 @@ const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
+const cartRoutes = require('./routes/cart');
+app.use('/api/cart', cartRoutes);

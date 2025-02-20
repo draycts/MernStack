@@ -16,8 +16,16 @@ const Login = () => {
                 password
             });
             if (response.status === 200) {
-                // Save the token to localStorage or state management
+                // Save the token to localStorage
                 localStorage.setItem('token', response.data.token);
+
+                // Fetch user details
+                const userResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/profile`, {
+                    headers: {
+                        Authorization: `Bearer ${response.data.token}`
+                    }
+                });
+                localStorage.setItem('user', JSON.stringify(userResponse.data));
                 navigate('/');
             }
         } catch (error) {

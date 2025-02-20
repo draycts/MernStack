@@ -1,7 +1,13 @@
+// filepath: /d:/2089375/GHCP-react-base-app/mern-Ecom-app/frontend/src/redux/reducer/handleCart.js
+
 // Retrieve initial state from localStorage if available
 const getInitialCart = () => {
-  const storedCart = localStorage.getItem("cart");
-  return storedCart ? JSON.parse(storedCart) : [];
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (user) {
+    const storedCart = localStorage.getItem(`cart_${user.username}`);
+    return storedCart ? JSON.parse(storedCart) : [];
+  }
+  return [];
 };
 
 const handleCart = (state = getInitialCart(), action) => {
@@ -20,9 +26,7 @@ const handleCart = (state = getInitialCart(), action) => {
       } else {
         updatedCart = [...state, { ...product, qty: 1 }];
       }
-      // Update localStorage
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      return updatedCart;
+      break;
 
     case "DELITEM":
       const exist2 = state.find((x) => x.id === product.id);
@@ -33,13 +37,19 @@ const handleCart = (state = getInitialCart(), action) => {
           x.id === product.id ? { ...x, qty: x.qty - 1 } : x
         );
       }
-      // Update localStorage
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      return updatedCart;
+      break;
 
     default:
       return state;
   }
+
+  // Update localStorage with user-specific key
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (user) {
+    localStorage.setItem(`cart_${user.username}`, JSON.stringify(updatedCart));
+  }
+
+  return updatedCart;
 };
 
 export default handleCart;
