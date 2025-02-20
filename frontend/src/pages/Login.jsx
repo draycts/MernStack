@@ -30,6 +30,7 @@ const Login = () => {
             }
         } catch (error) {
             console.error('Error logging in:', error.response.data.message);
+            navigate('/pagenotfound');
         }
     };
 
