@@ -1,5 +1,6 @@
+// filepath: /d:/2089375/GHCP-react-base-app/mern-Ecom-app/backend/routes/cart.js
 const express = require('express');
-const Cart = require('../models/cart');
+const User = require('../models/user');
 const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
@@ -7,11 +8,11 @@ const router = express.Router();
 // Get cart for the logged-in user
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const cart = await Cart.findOne({ userId: req.userData.userId });
-    if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
+    const user = await User.findById(req.userData.userId).select('cart');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    res.json(cart);
+    res.json(user.cart);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching cart', error: error.message });
   }
@@ -21,21 +22,21 @@ router.get('/', authMiddleware, async (req, res) => {
 router.post('/add', authMiddleware, async (req, res) => {
   try {
     const { productId, title, price, qty, image } = req.body;
-    let cart = await Cart.findOne({ userId: req.userData.userId });
+    const user = await User.findById(req.userData.userId);
 
-    if (!cart) {
-      cart = new Cart({ userId: req.userData.userId, items: [] });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    const itemIndex = cart.items.findIndex(item => item.productId === productId);
+    const itemIndex = user.cart.findIndex(item => item.productId === productId);
     if (itemIndex > -1) {
-      cart.items[itemIndex].qty += qty;
+      user.cart[itemIndex].qty += qty;
     } else {
-      cart.items.push({ productId, title, price, qty, image });
+      user.cart.push({ productId, title, price, qty, image });
     }
 
-    await cart.save();
-    res.status(200).json(cart);
+    await user.save();
+    res.status(200).json(user.cart);
   } catch (error) {
     res.status(500).json({ message: 'Error adding item to cart', error: error.message });
   }
@@ -45,22 +46,47 @@ router.post('/add', authMiddleware, async (req, res) => {
 router.post('/remove', authMiddleware, async (req, res) => {
   try {
     const { productId } = req.body;
-    const cart = await Cart.findOne({ userId: req.userData.userId });
+    const user = await User.findById(req.userData.userId);
 
-    if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    const itemIndex = cart.items.findIndex(item => item.productId === productId);
+    const itemIndex = user.cart.findIndex(item => item.productId === productId);
     if (itemIndex > -1) {
-      cart.items.splice(itemIndex, 1);
-      await cart.save();
-      res.status(200).json(cart);
+      user.cart.splice(itemIndex, 1);
+      await user.save();
+      res.status(200).json(user.cart);
     } else {
       res.status(404).json({ message: 'Item not found in cart' });
     }
   } catch (error) {
     res.status(500).json({ message: 'Error removing item from cart', error: error.message });
+  }
+});
+
+// Update cart
+router.post('/update', authMiddleware, async (req, res) => {
+  try {
+    const { cart } = req.body;
+    const user = await User.findById(req.userData.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.cart = cart.map(item => ({
+      productId: item.id,
+      title: item.title,
+      price: item.price,
+      qty: item.qty,
+      image: item.image
+    }));
+
+    await user.save();
+    res.status(200).json(user.cart);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating cart', error: error.message });
   }
 });
 

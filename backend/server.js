@@ -25,4 +25,4 @@ app.use('/api/auth', authRoutes);
 const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
 const cartRoutes = require('./routes/cart');
-app.use('/api/cart', cartRoutes);
+app.use('/api/cart', cartRoutes); // Ensure this line is present
