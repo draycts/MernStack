@@ -1,4 +1,3 @@
-// filepath: /d:/2089375/GHCP-react-base-app/mern-Ecom-app/frontend/src/pages/Login.test.jsx
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
