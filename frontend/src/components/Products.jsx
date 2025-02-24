@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addCart } from "../redux/action";
 
@@ -12,7 +12,7 @@ const Products = () => {
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState(data);
   const [loading, setLoading] = useState(false);
-  const componentMounted = useRef(true); // Use useRef to store the mutable value
+  let componentMounted = true;
 
   const dispatch = useDispatch();
 
@@ -24,18 +24,18 @@ const Products = () => {
     const getProducts = async () => {
       setLoading(true);
       const response = await fetch("https://fakestoreapi.com/products/");
-      if (componentMounted.current) {
+      if (componentMounted) {
         setData(await response.clone().json());
         setFilter(await response.json());
         setLoading(false);
       }
+
+      return () => {
+        componentMounted = false;
+      };
     };
 
     getProducts();
-
-    return () => {
-      componentMounted.current = false; // Clean up the ref value on unmount
-    };
   }, []);
 
   const Loading = () => {
@@ -131,6 +131,8 @@ const Products = () => {
                 </div>
                 <ul className="list-group list-group-flush">
                   <li className="list-group-item lead">$ {product.price}</li>
+                  {/* <li className="list-group-item">Dapibus ac facilisis in</li>
+                    <li className="list-group-item">Vestibulum at eros</li> */}
                 </ul>
                 <div className="card-body">
                   <Link
